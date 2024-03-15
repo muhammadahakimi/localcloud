@@ -1,0 +1,54 @@
+body {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-image: url("../resources/images/office.png");
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+#container {
+    display: flex;
+    height: 500px;
+    background-color: rgba(255, 255, 255, 0.4);
+    border-radius: 15px;
+    align-items: center;
+    backdrop-filter: blur(8px);
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+
+#btn_login {
+    display: block;
+    width: 100%;
+    padding: 8px;
+    margin-top: 10px;
+    border: none;
+    border-radius: 5px;
+    color: white;
+    background: #5c93ff;
+}
+
+#btn_register {
+    display: block;
+    width: 100%;
+    padding: 8px;
+    margin-top: 10px;
+    border: none;
+    border-radius: 5px;
+    color: white;
+    background: #0b1215;
+}
+
+.img_poster {
+    display: block;
+    height: 300px;
+    width: 300px;
+    object-fit: cover;
+    margin: auto;
+    filter: drop-shadow(0 0 10px rgba(0, 0, 0, 0.6));
+}
+
+hr {
+    margin: 20px 0px;
+}
