@@ -1,13 +1,6 @@
 <?php
-    include 'setup.php';
-    protect();
-
-    if(isset($_GET['delete'])&&$_SESSION['userid'] == "hakimi") {
-        deleteFile($_GET['delete']);
-        header('Location: index.php');
-    } else if(isset($_GET['delete'])) {
-        header('Location: index.php?alert=Access Denied');
-    }
+    include 'server/setup.php';
+    header("Location: dashboard.php");
 ?>
 
 <html>
