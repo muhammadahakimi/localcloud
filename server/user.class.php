@@ -53,7 +53,17 @@
                 return false;
             }
         }
-        
+
+        function topup_limit($userid, $val) {
+            try {
+                if(!$this->userid_exists($userid)) { throw new Exception("[Error] userid not exists"); }
+                return true;
+            } catch (Exception $e) {
+                $this->add_error_msg($e->getMessage());
+                return false;
+            }
+        }
+
         function login($userid = "", $password = "") {
             try {
                 $this->userid = $userid != "" ? $userid : $this->userid;
