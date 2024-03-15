@@ -56,7 +56,11 @@
 
         function topup_limit($userid, $val) {
             try {
-                if(!$this->userid_exists($userid)) { throw new Exception("[Error] userid not exists"); }
+                if (!$this->userid_exists($userid)) { throw new Exception("[Error] userid not exists"); }
+                if ($val <= 0) { throw new Exception("[Error] val cannot be less than 0"); }
+                $limit = $this->db->sql_select("users", "limit", "`userid`='$userid'")[0]['limit'];
+                $limit += $val;
+                if (!$this->db->sql_command("UPDATE `users` SET `limit`='$limit' WHERE `userid`='$userid'")) { throw new Exception("[Error] SQL Error"); }
                 return true;
             } catch (Exception $e) {
                 $this->add_error_msg($e->getMessage());
