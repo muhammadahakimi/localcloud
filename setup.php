@@ -72,4 +72,3 @@
     function registerSession($userid) {
         $_SESSION['userid'] = $userid;
     }
-?>
