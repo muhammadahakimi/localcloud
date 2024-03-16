@@ -467,8 +467,9 @@
             <br>
             <h3>Group User</h3>
             <div style="display:flex;margin-top:10px;gap:10px;">
-                <input id="input_add_user_group_folder" class="inputbox" placeholder="User ID to invite" autocomplete="off">
+                <input id="input_add_user_group_folder" list="user_list" class="inputbox" placeholder="User ID to invite" autocomplete="off">
                 <button class="btn_save" style="margin:0px;" onclick="add_user_group_folder()">Invite</button>
+                <?php print $user->datalist_user("user_list"); ?>
             </div>
             <div id="div_user_group_folder"></div>
             <button class="btn_save" onclick="update_group_folder()">Save Changes</button>

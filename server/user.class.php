@@ -314,11 +314,11 @@
         function datalist_user($listid) {
             $ret_html = "";
             
-            $data = $this->db->sql_select("users", ["userid","name"]);
+            $data = $this->db->sql_select("users", ["userid"]);
             if (count($data) != 0) {
                 $ret_html .= "<datalist id='$listid'>";
                 foreach ($data as $val) {
-                    $ret_html .= "option value='$val'>";
+                    $ret_html .= "<option value='". $val['userid'] ."'>";
                 }
                 $ret_html .= "</datalist>";
             }
