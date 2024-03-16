@@ -310,6 +310,20 @@
             }
             return $ret_html;
         }
+
+        function datalist_user($listid) {
+            $ret_html = "";
+            
+            $data = $this->db->sql_select("users", ["userid","name"]);
+            if (count($data) != 0) {
+                $ret_html .= "<datalist id='$listid'>";
+                foreach ($data as $val) {
+                    $ret_html .= "option value='$val'>";
+                }
+                $ret_html .= "</datalist>";
+            }
+            return $ret_html;
+        }
         
         function add_error_msg($msg) {
             $this->error_msg .= $msg . "<br>";
