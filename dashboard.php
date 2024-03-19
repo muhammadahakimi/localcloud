@@ -192,15 +192,6 @@
             display: none;
         }
 
-        #img_profile {
-            display: block;
-            width: 150px;
-            height: 150px;
-            border-radius: 50%;
-            object-fit: cover;
-            margin: auto;
-        }
-
         .searchinput {
             display: flex;
             width: fit-content;
@@ -304,6 +295,35 @@
             display: none;
         }
 
+        #profile_card {
+            height: 200px;
+            width: 350px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.1), 0 6px 20px 0 rgba(0, 0, 0, 0.09);
+        }
+
+        #profile_card > div:first-child {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: calc(100% - 40px);
+            color: white;
+            background: #0919aa;
+            border-radius: 10px 10px 0px 0px;
+            padding: 10px 20px;
+        }
+
+        #profile_card > div:nth-child(2) {
+            padding: 10px;
+        }
+
+        #img_profile {
+            display: block;
+            width: 80px;
+            height: 100px;
+            object-fit: cover;
+        }
+
     </style>
 </head>
 <body>
@@ -362,10 +382,6 @@
             <div id="div_group_folder">
                 <?php print $file->html_group_folder(); ?>
             </div> 
-            <!--<div class="searchinput">
-                <input>
-                <button><img src="resources/icons/search.svg"></button>
-            </div>-->
         </div>
         <div id="tab_trash" class="tab">
             <table id="table_trash" class="table2">
@@ -373,31 +389,20 @@
             </table>
         </div>
         <div id="tab_profile" class="tab">
-            <h2>Profile</h2>
-            <div style="display:flex;gap:20px;width:100%">
+            
+            <div id="profile_card">
+                <div>
+                    <h4>Profile Card</h4>
+                    <h5>ID: hakimi</h5>
+                </div>
                 <div>
                     <img id="img_profile" src="<?php print $user->url_profile($user->userid); ?>">
-                    <label style="display:block;margin:auto;text-align:center">userid</label>
-                </div>
-                <div style="flex:1;">
-                    <div style="display:flex;gap:10px;">
-                        <div style="flex:1;">
-                            <label class="labelinputbox">Name</label>
-                            <input class="inputbox">
-                        </div>
-                        <div style="flex:1;">
-                            <label class="labelinputbox">Phone</label>
-                            <input class="inputbox">
-                        </div>
+                    <div>
+                        Full name 
                     </div>
-                    
-                    
-                    <label class="labelinputbox">Email</label>
-                    <input class="inputbox">
                 </div>
                 
             </div>
-            
             
         </div>
     </div>
