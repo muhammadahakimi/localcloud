@@ -7,6 +7,12 @@
         private $databasename = "cloud";
         private $username = "root";
         private $password = "";
+
+
+        public $stmt = array();
+        public $prepared_id = 0;
+        public $prepared_column = array();
+        public $prepared_data = array();
         
         public $sql_select_result = false;
         public $sql_select_reason = "";
@@ -129,10 +135,77 @@
     
             return $response;
         }
+
+        function prepared($method, $table, $column) {
+            try {
+                if ($method == "") { throw new Exception("[Error] method not assigned"); }
+                if ($method != "insert" && $method != "update") { throw new Exception("[Error] nethod not supported"); }
+                if ($table == "") { throw new Exception("[Error] Table not assigned"); }
+                if (!is_array($column)) { throw new Exception("[Error] column in array type"); }
+                $id = $this->gen_prepared_id();
+                $sql_column = ""; $sql_key = "";
+                foreach ($column as $val) {
+                    if (!is_array($val)) {
+                        $this->prepared_column[$id][] = $val;
+                        if ($method == "insert") {
+                            $sql_column .= $sql_column == "" ? "`$val`" : ", `$val`";
+                            $sql_key .= $sql_key == "" ? ":$val" : ", :$val";
+                        } else if ($method == "update") {
+                            $sql_column .= $sql_column == "" ? "`$val`=:$val" : ", `$val`=:$val";
+                        } else {
+                            throw new Exception("[Error] nethod not supported");
+                        }
+                    }
+                }
+                $sql = $method == "insert" ? "INSERT INTO `` ($sql_column) VALUES ($sql_key)" : "UPDATE `$table` SET $sql_column";
+                $this->stmt[$id] = $this->conn->prepare($sql);
+                foreach ($this->prepared_column[$id] as $val) {
+                    $this->stmt[$id]->bindParam(':' . $val, $this->prepared_data[$id][$val]);
+                }
+                
+                return $id;
+            } catch (Exception $e) {
+                $this->add_error_msg($e->getMessage());
+                return false;
+            }
+        }
+
+        function prepared_execute($id, $data) {
+            try {
+                if(count($data) != count($this->prepared_data[$id])) { throw new Exception("[Error] data and stmt not matching"); }
+                for ($l = 0; $l < count($this->prepared_data[$id]); $l++) {
+                    if (is_array($data[$l])) { throw new Exception("[Error] data stucture not supported"); }
+                    $this->prepared_data[$id][$l] = $data[$l];
+                }
+
+                if (!$this->stmt[$id]->execute()) { throw new Exception("[Error] Execution failed"); }
+
+                return true;
+            } catch (Exception $e) {
+                $this->add_error_msg($e->getMessage());
+                return false;
+            }
+        }
         
         function add_error_msg($msg) {
             $this->error_msg .= $msg . "<br>";
             return true;
         }
+
+        function gen_prepared_id() {
+            $this->prepared_id++;
+            return $this->prepared_id;
+        }
+
+        function beginTransaction() {
+            $this->conn->beginTransaction();
+        }
+
+        function rollBack() {
+            $this->conn->rollBack();
+        }
+
+        function commit() {
+            $this->conn->commit();
+        }
     }
-?>
