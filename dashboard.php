@@ -417,7 +417,14 @@
         </div>
         <div id="tab_profile" class="tab">
             <div>
-                <div style="width:200px;"><img id="img_profile" src="<?php print $user->url_profile($user->userid); ?>"></div>
+                <div style="width:200px;">
+                    <img id="img_profile" src="<?php print $user->url_profile($user->userid); ?>">
+                    <label class="inputfile" style="margin-top:10px;text-align:center;">
+                        <img src="resources/icons/upload_white.svg">
+                        Changes Profile
+                        <input id="input_upload_profile" type="file"  onchange="update_profile()" />
+                    </label>
+                </div>
                 <div style="flex:1">
                     <h2>Change User Information here</h2>
                     <label class="labelinputbox">Full Name</label>
@@ -430,7 +437,7 @@
                             <input class="inputbox" style="width:150px;">
                         </div>
                         <div>
-                            <button>Save Changes</button>
+                            <button class="btn_save">Save Changes</button>
                         </div>
                     </div>
                     <br><br>
@@ -445,6 +452,7 @@
                             <input type="password" class="inputbox">
                         </div>
                     </div>
+                    <button class="btn_save" style="margin-top: 10px;">Confirm Changes</button>
                 </div>
                 <div id="divStorage">
                     <h3>Storage Capacity</h3>
@@ -893,6 +901,61 @@
             });
 
             xhr.open("POST", "server/upload.php", true);
+            xhr.send(fd);
+        }
+    }
+
+    function update_profile() {
+        if(document.getElementById("input_upload_profile").files.length == 0 ){
+            return false;
+        } else {
+            console.log("Start upload");
+            loadingStart();
+            var fd = new FormData();
+            var files = $('#input_upload_profile')[0].files[0];
+            fd.append('file',files);
+
+            var xhr = new XMLHttpRequest();
+
+            xhr.upload.addEventListener("progress", function(event) {
+                if (event.lengthComputable) {
+                    var percentComplete = (event.loaded / event.total) * 100;
+                    console.log("Upload progress: " + percentComplete.toFixed(2) + "%");
+                    loadingProgressUpdate(percentComplete.toFixed(0));
+                }
+            });
+
+            xhr.addEventListener("load", function(event) {
+                if (xhr.status === 200) {
+                    console.log("Upload complete");
+                    console.log(xhr.responseText);
+                    var response = JSON.parse(xhr.responseText);
+                    console.log(response);
+                    if(response.result) {
+                        $("#table_file").html(response.gui);
+                        $('#input_upload').val("");
+                        $('#divUpload').css('display','none');
+                    } else {
+                        alert(response.reason);
+                    }
+                    
+                    loadingEnd();
+                } else {
+                    console.error("Upload failed with status: " + xhr.status);
+                }
+            });
+
+            xhr.addEventListener("error", function(event) {
+                console.error("Upload failed");
+                loadingEnd();
+            });
+
+            xhr.addEventListener("abort", function(event) {
+                console.log("Upload aborted");
+                loadingEnd();
+            });
+
+            xhr.open("POST", "server/update_profile.php", true);
             xhr.send(fd);
         }
     }

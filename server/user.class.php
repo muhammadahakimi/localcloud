@@ -20,6 +20,8 @@
         
         private $session_id = "";
         private $db;
+        private $folder_profile = "";
+        private $option_folder_profile = ["resources/profiles", "./resources/profiles","../resources/profiles","../../resources/profiles"];
         
         function __construct() {
             if((session_status() !== PHP_SESSION_ACTIVE) || (session_status() === PHP_SESSION_NONE)) { session_start(); }
@@ -49,6 +51,22 @@
 
                 return true;
             } catch(Exception $e) {
+                $this->add_error_msg($e->getMessage());
+                return false;
+            }
+        }
+
+        function set_folder_profile() {
+            try {
+                if ($this->folder_profile != "") { return true; }
+                foreach ($this->option_folder_profile as $val) {
+                    if (is_dir($val)) {
+                        $this->folder_profile = $val . "/";
+                        return true;
+                    }
+                }
+                throw new Exception("[Error] dir for folder picture not found");
+            } catch (Exception $e) {
                 $this->add_error_msg($e->getMessage());
                 return false;
             }
@@ -247,19 +265,44 @@
 
         function url_profile($userid) {
             try {
-                if($userid == "") { throw new Exception("[Error] userid not assigned"); }
-                if(!$this->userid_exists($userid)) { throw new Exception("[Error] userid not found"); }
+                if ($userid == "") { throw new Exception("[Error] userid not assigned"); }
+                if (!$this->userid_exists($userid)) { throw new Exception("[Error] userid not found"); }
                 $data = $this->db->sql_select("users", "picture", "`userid`='$userid'");
-                if(count($data) == 0) { throw new Exception("[Error] userid not found 2"); }
+                if (count($data) == 0) { throw new Exception("[Error] userid not found 2"); }
                 $picture = $data[0]['picture'];
-                if($picture == "") {
-                    return "resources/profiles/default.jpg";
+                if (!$this->set_folder_profile()) { throw new Exception("[Error] failed to set folder picture"); }
+                if ($picture == "") {
+                    return $this->folder_profile . "default.jpg";
                 } else {
-                    return "resources/profiles/" . $picture;
+                    return $this->folder_profile . $picture;
                 }
             } catch(Exception $e) {
                 $this->add_error_msg($e->getMessage());
                 return "false";
+            }
+        }
+
+        function update_profile($file) {
+            try {
+                if (!$this->is_login()) { throw new Exception("[Warning] Please login first"); }
+                $type = pathinfo($file['name'], PATHINFO_EXTENSION);
+                $name = $this->userid . "." . $type;
+                if (!$this->set_folder_profile()) { throw new Exception("[Error] failed to set folder picture"); }
+                
+                $location = $this->folder_profile . $name;
+                if (is_file($location)) {
+                    if (!unlink($location)) { throw new Exception("[Error] failed to delete old picture"); }
+                }
+
+                $format_list = ["png","jpg","jpeg"];
+                if (!in_array(strtolower($type),$format_list)) { throw new Exception("[Error] Invalid format type"); }
+                if (!move_uploaded_file($file["tmp_name"], $location)) { throw new Exception("[Error] failed to store file in server"); }
+                if (!$this->db->sql_command("UPDATE `users` SET `picture`='$name' WHERE `userid`='".$this->userid."'")) { throw new Exception("[Error] SQL Failed"); }
+
+                return true;
+            } catch (Exception $e) {
+                $this->add_error_msg($e->getMessage());
+                return false;
             }
         }
 

@@ -162,7 +162,7 @@
                 $location = "../file/" . $this->id . ".lcf";
 
                 if (!in_array(strtolower($this->type),$this->set_format())) { throw new Exception("[Error] Invalid format type"); }
-                if (!move_uploaded_file($_FILES["file"]["tmp_name"], $location)) { throw new Exception("[Error] failed to "); }
+                if (!move_uploaded_file($file["tmp_name"], $location)) { throw new Exception("[Error] failed to store file in server"); }
                 if (!$this->create_file($this->id, $this->header, $this->name, $this->size, $this->type)) { throw new Exception("[Error] failed to create_file"); }
 
                 return true;
