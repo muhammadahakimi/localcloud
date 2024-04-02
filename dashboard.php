@@ -295,33 +295,60 @@
             display: none;
         }
 
-        #profile_card {
-            height: 200px;
-            width: 350px;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.1), 0 6px 20px 0 rgba(0, 0, 0, 0.09);
-        }
-
-        #profile_card > div:first-child {
+        #tab_profile > div:first-child {
             display: flex;
-            justify-content: space-between;
-            align-items: center;
-            width: calc(100% - 40px);
-            color: white;
-            background: #0919aa;
-            border-radius: 10px 10px 0px 0px;
-            padding: 10px 20px;
+            gap: 30px;
+            width: 100%;
         }
 
-        #profile_card > div:nth-child(2) {
-            padding: 10px;
+        #tab_profile > div:first-child > div {
+            height: fit-content;
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.1), 0 6px 20px 0 rgba(0, 0, 0, 0.09);
         }
 
         #img_profile {
             display: block;
-            width: 80px;
-            height: 100px;
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
             object-fit: cover;
+            margin: auto;
+        }
+
+        #divStorage {
+            flex: 1;
+            max-width: 400px;
+        }
+
+        #divStorage > div  {
+            color: white;
+            flex: 1;
+            padding: 20px;
+            border-radius: 10px;
+            background: slateblue;
+            margin-top: 20px;
+        }
+
+        #divStorage > div > div {
+            margin-top: 10px;
+            background: white;
+            border-radius: 5px;
+            width: 100%;
+        }
+
+        #divStorage > div > div > div {
+            background: mediumseagreen;
+            padding: 5px;
+            text-align: right;
+            border-radius: 5px;
+        }
+
+        #divStorage > div > p {
+            margin: 0px;
+            margin-top: 10px;
+            text-align: center;
         }
 
     </style>
@@ -389,21 +416,50 @@
             </table>
         </div>
         <div id="tab_profile" class="tab">
-            
-            <div id="profile_card">
-                <div>
-                    <h4>Profile Card</h4>
-                    <h5>ID: hakimi</h5>
-                </div>
-                <div>
-                    <img id="img_profile" src="<?php print $user->url_profile($user->userid); ?>">
-                    <div>
-                        Full name 
+            <div>
+                <div style="width:200px;"><img id="img_profile" src="<?php print $user->url_profile($user->userid); ?>"></div>
+                <div style="flex:1">
+                    <h2>Change User Information here</h2>
+                    <label class="labelinputbox">Full Name</label>
+                    <input class="inputbox">
+                    <label class="labelinputbox">Email</label>
+                    <input class="inputbox">
+                    <div style="display:flex;justify-content:space-between;align-items:flex-end;">
+                        <div>
+                            <label class="labelinputbox">Phone</label>
+                            <input class="inputbox" style="width:150px;">
+                        </div>
+                        <div>
+                            <button>Save Changes</button>
+                        </div>
+                    </div>
+                    <br><br>
+                    <h2>Change User Password</h2>
+                    <div style="display:flex;gap:10px;align-items:flex-end;">
+                        <div style="flex:1;">
+                            <label class="labelinputbox">New Password</label>
+                            <input type="password" class="inputbox">
+                        </div>
+                        <div style="flex:1;">
+                            <label class="labelinputbox">Repeat New Password</label>
+                            <input type="password" class="inputbox">
+                        </div>
                     </div>
                 </div>
-                
+                <div id="divStorage">
+                    <h3>Storage Capacity</h3>
+                    <div id="divStoragePersonal">
+                        <h4>Personal</h4>
+                        <div><div style="width: clamp(45px,<?php print $user->percent_personal(); ?>%, 100% - 10px);"><?php print $user->percent_personal(); ?>%</div></div>
+                        <p><?php print size_as_kb($user->usage) . " / " . size_as_kb($user->limit); ?></p>
+                    </div>
+                    <div id="divStorageGroupFolder">
+                        <h4>Group Folder</h4>
+                        <div><div>100%</div></div>
+                        <p><?php print size_as_kb($user->group_folder); ?></p>
+                    </div>
+                </div>
             </div>
-            
         </div>
     </div>
     <div id="divUpload" class="overlay">

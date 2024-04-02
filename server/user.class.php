@@ -275,6 +275,18 @@
             }
         }
 
+        function percent_personal() {
+            try {
+                if (!$this->is_login()) { throw new Exception("[Warning] please login first"); }
+                $percent = $this->usage / $this->limit * 100;
+                if ($percent < 0) { throw new Exception("[Error] percent error"); }
+                return number_format($percent, 2);
+            } catch (Exception $e) {
+                $this->add_error_msg($e->getMessage());
+                return false;
+            }
+        }
+
         function register() {
             try {
                 if($this->userid == "") { throw new Exception("[Error] userid not assigned"); }
